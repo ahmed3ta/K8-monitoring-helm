@@ -28,7 +28,13 @@ jobs:
 - job: installIngress
   condition: ${{ eq(parameters.ingress, true) }}
   steps:
+  - task: helm@1
+    displayName: adding stable repo
+    inputs:
+      subCommand: 'repo add'
+      arguments: 'stable https://charts.helm.sh/stable'
   - task: HelmDeploy@0
+    displayName: updating the ingress deployment
     inputs:
       connectionType: 'Azure Resource Manager'
       azureSubscription: 'Ahmed Atta Sandbox Sub(eca10a92-9242-45e3-ab37-bbe5c5e81dd8)'
