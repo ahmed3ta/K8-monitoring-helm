@@ -1,0 +1,48 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+  - name: ingress
+    type: boolean
+    default: false
+  - name: cert-manager
+    type: boolean
+    default: false
+  - name: monitoring-stack
+    type: boolean
+    default: false
+jobs:
+- job: InstallHelm
+  steps:
+  - task: HelmInstaller@0
+    inputs:
+      helmVersion: '2.14.1'
+      installKubectl: true
+- job: installIngress
+  condition: ${{ eq(parameters.ingress, true) }}
+  steps:
+  # - task: helm@1
+  #   displayName: adding stable repo
+  #   inputs:
+  #     subCommand: 'repo add'
+  #     arguments: 'stable https://charts.helm.sh/stable'
+  - task: HelmDeploy@0
+    displayName: updating the ingress deployment
+    inputs:
+      connectionType: 'Azure Resource Manager'
+      azureSubscription: 'Ahmed Atta Sandbox Sub(eca10a92-9242-45e3-ab37-bbe5c5e81dd8)'
+      azureResourceGroup: 'k8s-with-monitoring-dev'
+      kubernetesCluster: 'kubernetes-cluster-dev'
+      namespace: 'nginx-ingress'
+      command: 'upgrade'
+      chartType: 'Name'
+      chartName: 'https://charts.helm.sh/stable/nginx-ingress'
+      arguments: '--create-namespace'
+    
