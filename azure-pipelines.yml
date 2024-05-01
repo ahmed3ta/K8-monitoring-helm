@@ -28,11 +28,11 @@ jobs:
 - job: installIngress
   condition: ${{ eq(parameters.ingress, true) }}
   steps:
-  - task: helm@1
-    displayName: adding stable repo
-    inputs:
-      subCommand: 'repo add'
-      arguments: 'stable https://charts.helm.sh/stable'
+  # - task: helm@1
+  #   displayName: adding stable repo
+  #   inputs:
+  #     subCommand: 'repo add'
+  #     arguments: 'stable https://charts.helm.sh/stable'
   - task: HelmDeploy@0
     displayName: updating the ingress deployment
     inputs:
@@ -43,6 +43,6 @@ jobs:
       namespace: 'nginx-ingress'
       command: 'upgrade'
       chartType: 'Name'
-      chartName: 'stable/nginx-ingress'
+      chartName: 'https://charts.helm.sh/stable/nginx-ingress'
       arguments: '--create-namespace'
     
