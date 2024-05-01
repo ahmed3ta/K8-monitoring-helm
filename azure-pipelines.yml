@@ -9,7 +9,7 @@ pool:
   vmImage: ubuntu-latest
 
 parameters:
-  - name: ingress-nginx
+  - name: ingress
     type: boolean
     default: false
   - name: cert-manager
@@ -26,7 +26,7 @@ jobs:
       helmVersion: '2.14.1'
       installKubectl: true
 - job: installIngress
-  condition: ${{ if eq(parameters['ingress-nginx'], true) }}
+  condition: ${{ eq(parameters.ingress, true) }}
   steps:
   - task: HelmDeploy@0
     inputs:
